@@ -7,14 +7,14 @@ const app = express();
 
 app.set('port',process.env.PORT || 3000)
 
+app.use(cors({
+    origin: 'http://localhost:8081'
+}))
+
 app.use(morgan('dev'));
 
 app.use(express.json()); 
 
 app.use(routes);
-
-app.use(cors({
-    origin: 'http://localhost:8081'
-}))
 
 export default app

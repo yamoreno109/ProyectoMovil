@@ -1,37 +1,114 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from "react-native";
 
 function Registro(props) {
+  const [numeroDocumento, setNumeroDocumento] = useState("");
+  const [nombreCompleto, setNombreCompleto] = useState("");
+  const [email, setEmail] = useState(""); 
+  const [contraseña, setContraseña] = useState("");
+  const [numeroCuenta, setNumeroCuenta] = useState("");
+  const [tipoCuenta, setTipoCuenta] = useState("");
+
+  const RegistrarUsuario = async () => {
+    const data = {
+      UsuarioId: numeroDocumento,
+      Nombre: nombreCompleto,
+      Email: email,
+      Contraseña: contraseña,
+      NumeroCuenta: numeroCuenta,
+      Tipo: tipoCuenta,
+    };
+
+    console.log("Datos que se envían al servidor:", data);
+
+    try {
+      const response = await fetch('http://localhost:3000/postusuario', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        window.alert("Registro exitoso", "Tus datos fueron enviados correctamente.");
+      } else {
+        window.alert("Error en el registro", result.message || "Hubo un problema al enviar los datos.");
+      }
+    } catch (error) {
+      window.alert("Error", "No se pudo conectar con el servidor.");
+    }
+  };
+
   return (
     <View style={styles.container}>
-
-      <Text style={styles.nombreCompleto}>Nombre completo:</Text>
+      <Text style={styles.label}>Número de documento:</Text>
       <View style={styles.rect}>
-        <TextInput style={styles.input} placeholder="Ingrese su nombre completo" />
+        <TextInput 
+          style={styles.input} 
+          placeholder="Ingrese su número de documento"
+          value={numeroDocumento}
+          onChangeText={setNumeroDocumento} 
+        />
       </View>
 
-      <Text style={styles.email}>Email:</Text>
-      <View style={styles.rect1}>
-        <TextInput style={styles.input} placeholder="Ingrese su email" keyboardType="email-address" />
+      <Text style={styles.label}>Nombre completo:</Text>
+      <View style={styles.rect}>
+        <TextInput 
+          style={styles.input} 
+          placeholder="Ingrese su nombre completo"
+          value={nombreCompleto}
+          onChangeText={setNombreCompleto} 
+        />
       </View>
 
-      <Text style={styles.contrasena}>Contraseña:</Text>
-      <View style={styles.rect2}>
-        <TextInput style={styles.input} placeholder="Ingrese su contraseña" secureTextEntry />
+      <Text style={styles.label}>Email:</Text>
+      <View style={styles.rect}>
+        <TextInput 
+          style={styles.input} 
+          placeholder="Ingrese su email" 
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail} 
+        />
       </View>
 
-      <Text style={styles.numeroDeCuenta}>Número de cuenta o celular:</Text>
-      <View style={styles.rect3}>
-        <TextInput style={styles.input} placeholder="Ingrese su número de cuenta o celular" keyboardType="phone-pad" />
+      <Text style={styles.label}>Contraseña:</Text>
+      <View style={styles.rect}>
+        <TextInput 
+          style={styles.input} 
+          placeholder="Ingrese su contraseña" 
+          secureTextEntry
+          value={contraseña}
+          onChangeText={setContraseña} 
+        />
       </View>
 
-      <Text style={styles.tipoDeCuenta}>Tipo de cuenta:</Text>
-      <View style={styles.rect4}>
-        <TextInput style={styles.input} placeholder="Ingrese el tipo de cuenta" />
+      <Text style={styles.label}>Número de cuenta o celular:</Text>
+      <View style={styles.rect}>
+        <TextInput 
+          style={styles.input} 
+          placeholder="Ingrese su número de cuenta o celular" 
+          keyboardType="phone-pad" 
+          value={numeroCuenta}
+          onChangeText={setNumeroCuenta} 
+        />
+      </View>
+
+      <Text style={styles.label}>Tipo de cuenta:</Text>
+      <View style={styles.rect}>
+        <TextInput 
+          style={styles.input} 
+          placeholder="Ingrese el tipo de cuenta"
+          value={tipoCuenta}
+          onChangeText={setTipoCuenta} 
+        />
       </View>
 
       <View style={styles.cupertinoButtonInfo2Row}>
-        <CupertinoButtonInfo2 style={styles.cupertinoButtonInfo2}></CupertinoButtonInfo2>
+        <CupertinoButtonInfo2 style={styles.cupertinoButtonInfo2} onPress={RegistrarUsuario} />
       </View>
     </View>
   );
@@ -39,7 +116,7 @@ function Registro(props) {
 
 function CupertinoButtonInfo2(props) {
   return (
-    <TouchableOpacity style={[styles.containerButton, props.style]}>
+    <TouchableOpacity style={[styles.containerButton, props.style]} onPress={props.onPress}>
       <Text style={styles.completar}>Completar</Text>
     </TouchableOpacity>
   );
@@ -50,80 +127,23 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
-  nombreCompleto: {
+  label: {
     fontFamily: "roboto-regular",
     color: "#121212",
     height: 39,
     width: "100%",
-    marginTop: 25,
-    marginBottom: 5,
-  },
-  email: {
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    height: 39,
-    width: "100%",
-    marginTop: 25,
-    marginBottom: 5,
-  },
-  contrasena: {
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    height: 39,
-    width: "100%",
-    marginTop: 25,
-    marginBottom: 5,
-  },
-  numeroDeCuenta: {
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    height: 39,
-    width: "100%",
-    marginTop: 25,
-    marginBottom: 5,
-  },
-  tipoDeCuenta: {
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    height: 39,
-    width: "100%",
-    marginTop: 25,
-    marginBottom: 5,
+    marginTop: 10, 
+    marginBottom: 2, 
   },
   rect: {
-    width: "100%",
-    height: 33,
+    width: 313,
+    height: 53,
     backgroundColor: "#E6E6E6",
-    marginTop: 5,
+    marginTop: -8, 
     alignSelf: "center",
-  },
-  rect1: {
-    width: "100%",
-    height: 33,
-    backgroundColor: "#E6E6E6",
-    marginTop: 5,
-    alignSelf: "center",
-  },
-  rect2: {
-    width: "100%",
-    height: 33,
-    backgroundColor: "#E6E6E6",
-    marginTop: 5,
-    alignSelf: "center",
-  },
-  rect3: {
-    width: "100%",
-    height: 33,
-    backgroundColor: "#E6E6E6",
-    marginTop: 5,
-    alignSelf: "center",
-  },
-  rect4: {
-    width: "100%",
-    height: 33,
-    backgroundColor: "#E6E6E6",
-    marginTop: 5,
-    alignSelf: "center",
+    borderWidth: 1,
+    borderColor: "rgba(126,188,53,1)",
+    borderRadius: 5,
   },
   input: {
     width: '100%',
@@ -150,13 +170,8 @@ const styles = StyleSheet.create({
   cupertinoButtonInfo2Row: {
     height: 49,
     flexDirection: "row",
-    justifyContent: "center", // Centrar el botón horizontalmente
-    marginTop: 30, // Ajustar el margen superior para separar del último campo
-  },
-  cupertinoHeaderWithAddButton1: {
-    height: 35,
-    width: "100%",
-    marginTop: 20,
+    justifyContent: "center",
+    marginTop: 20, 
   },
   containerButton: {
     backgroundColor: "#007AFF",
@@ -174,3 +189,4 @@ const styles = StyleSheet.create({
 });
 
 export default Registro;
+

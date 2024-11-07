@@ -1,9 +1,58 @@
 import React from 'react';
+import { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 function Login(props) {
   const navigation = useNavigation();
+  const [numeroCuenta, setNumeroCuenta] = useState("")
+  const [contraseña, setContraseña] = useState("")
+
+  const IngresarLobby = async () =>{
+    if(!numeroCuenta || !contraseña){
+      window.alert("Error", "Por favor, ingresa tu número de cuenta y contraseña.");
+      return;
+    }
+    
+    const info = {
+      NumeroCuenta: numeroCuenta,
+      Contraseña: contraseña
+    }
+    
+    try {
+      const response = await fetch('http://localhost:3000/login',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(info)
+      })
+
+      const result = await response.json()
+
+      
+      if(!response.ok){
+        throw new Error('Error en la autenticación')
+      }
+      if (result.success) {
+        
+        navigation.navigate('Home', {
+          UsuarioId: result.user.UsuarioId,
+          Nombre: result.user.Nombre,
+          Email: result.user.Email,
+          Contraseña: result.user.Contraseña,
+          NumeroCuenta: result.user.NumeroCuenta,
+          Tipo: result.user.Tipo,
+          Saldo: result.user.Saldo
+        });
+      }
+      
+    } catch (error) {
+      console.log(error) 
+      window.alert("Error", "No se pudo iniciar sesión. Por favor, intenta nuevamente.");
+    }
+
+  }
 
   return (
     <View style={styles.container}>
@@ -15,6 +64,8 @@ function Login(props) {
         style={styles.numeroCuentaInput}
         placeholder="Número cuenta"
         placeholderTextColor="#121212"
+        value={numeroCuenta}
+        onChangeText={setNumeroCuenta}
       />
 
       <TextInput
@@ -22,6 +73,8 @@ function Login(props) {
         placeholder="Contraseña"
         placeholderTextColor="#121212"
         secureTextEntry={true}
+        value={contraseña}
+        onChangeText={setContraseña}
       />
 
       <Text style={styles.loremIpsum}>
@@ -40,7 +93,7 @@ function Login(props) {
       <View style={styles.cupertinoButtonInfoRow}>
         <CupertinoButtonInfo
           style={styles.cupertinoButtonInfo}
-          onPress={() => navigation.navigate('Home')}
+          onPress={IngresarLobby}
         />
         <View style={styles.cupertinoButtonInfoFiller}></View>
         <CupertinoButtonInfo1
@@ -68,13 +121,13 @@ function CupertinoButtonInfo1(props) {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
     flexWrap: "nowrap",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
+    marginLeft: 20
   },
   bancoEstebanquito: {
     fontFamily: "roboto-regular",
@@ -95,6 +148,8 @@ const styles = StyleSheet.create({
     marginTop: 283,
     borderRadius: 8,
     fontSize: 16,
+    borderWidth: 1, 
+    borderColor: "rgba(126,188,53,1)" 
   },
   contrasenaInput: {
     width: 313,
@@ -106,6 +161,8 @@ const styles = StyleSheet.create({
     marginTop: 369,
     borderRadius: 8,
     fontSize: 16,
+    borderWidth: 1, 
+    borderColor: "rgba(126,188,53,1)" 
   },
   loremIpsum: {
     fontFamily: "roboto-regular",
@@ -151,8 +208,7 @@ const styles = StyleSheet.create({
     width: 166,
     backgroundColor: "rgba(126,188,53,1)",
     borderWidth: 1,
-    borderColor: "#000000",
-    borderStyle: "solid",
+    borderColor: "rgba(126,188,53,1)", 
     shadowColor: "rgba(0,0,0,1)",
     shadowOffset: {
       width: 3,

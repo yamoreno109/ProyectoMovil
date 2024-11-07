@@ -1,31 +1,101 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, TextInput} from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { useState } from "react";
+import { useRoute } from "@react-navigation/native";
 
 
 function Prestamos(props) {
+  const route = useRoute()
+  const { UsuarioId, Nombre, Email, Contraseña, NumeroCuenta, Tipo, Saldo } = route.params || {};
+  const [usuarioid,setUsuarioId] = useState("")
+  const [monto,setMonto] = useState("")
+  const [plazo,setPlazo] = useState("")
+  const [estado,setEstado] = useState('Pendiente')
+  const [fechaSolicitud,setFechaSolicitud] = useState("")
   const navigation = useNavigation();
+
+  const RegistrarPrestamo = async () =>{
+    const data = {
+      UsuarioId: usuarioid,
+      Monto: monto,
+      Plazo: plazo,
+      Estado: estado,
+      FechaSolicitud: fechaSolicitud
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/postprestamo',{
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      })
+
+      const result = await response.json()
+
+      if(response.ok){
+        window.alert("Registro exitoso", "Tus datos fueron enviados correctamente.");
+      } else {
+        window.alert("Error en el registro", result.message || "Hubo un problema al enviar los datos.");
+      }
+    } catch (error) {
+      window.alert("Error", "No se pudo conectar con el servidor.");
+    }
+
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.rect}>
-      <TextInput style={styles.input} placeholder="Ingrese su usuario"/>
+      <TextInput 
+        style={styles.input} 
+        placeholder="Ingrese su documento"
+        value = {usuarioid}
+        onChangeText = {setUsuarioId}/>
       </View>
       <View style={styles.rect1}>
-      <TextInput style={styles.input} placeholder="Ingrese el monto" />
+      <TextInput 
+        style={styles.input} 
+        placeholder="Ingrese el monto"
+        value = {monto}
+        onChangeText = {setMonto} />
+      </View>
+      <View style={styles.rect3}>
+      <TextInput 
+        style={styles.input} 
+        placeholder="Ingrese el plazo"
+        value = {plazo}
+        onChangeText = {setPlazo} />
       </View>
       <View style={styles.rect2}>
-      <TextInput style={styles.input} placeholder="Ingrese el plazo" />
+      <TextInput 
+        style={styles.input} 
+        placeholder="Ingrese la fecha"
+        value = {fechaSolicitud}
+        onChangeText = {setFechaSolicitud} />
       </View>
       <Text style={styles.usuario}>Usuario:</Text>
       <Text style={styles.monto}>Monto:</Text>
       <Text style={styles.plazo}>Plazo:</Text>
+      <Text style={styles.fecha}>Fecha de la solicitud:</Text>
       <View style={styles.cupertinoButtonInfo2Row}>
         <CupertinoButtonInfo2
           style={styles.cupertinoButtonInfo2}
+          onPress = {RegistrarPrestamo}
         ></CupertinoButtonInfo2>
         <CupertinoButtonInfo3
           style={styles.cupertinoButtonInfo3}
-          onPress = {() => navigation.navigate('Estado')}
+          onPress = {() => navigation.navigate('Estado',{
+            UsuarioId,
+            Nombre,
+            Email,
+            Contraseña,
+            NumeroCuenta,
+            Tipo,
+            Saldo
+          })}
         ></CupertinoButtonInfo3>
       </View>
     </View>
@@ -34,7 +104,7 @@ function Prestamos(props) {
 
 function CupertinoButtonInfo2(props) {
   return (
-    <TouchableOpacity style={[styles.containerButton, props.style]} >
+    <TouchableOpacity style={[styles.containerButton, props.style]} onPress={props.onPress} >
       <Text style={styles.completar}>Completar</Text>
     </TouchableOpacity>
   );
@@ -74,12 +144,19 @@ const styles = StyleSheet.create({
     marginTop: 48,
     marginLeft: 38
   },
+  rect3: {
+    width: 283,
+    height: 36,
+    backgroundColor: "#E6E6E6",
+    marginTop: 48,
+    marginLeft: 38
+  },
   usuario: {
     fontFamily: "roboto-regular",
     color: "#121212",
     height: 36,
     width: 283,
-    marginTop: -246,
+    marginTop: -310,
     marginLeft: 38
   },
   monto: {
@@ -91,6 +168,14 @@ const styles = StyleSheet.create({
     marginLeft: 38
   },
   plazo: {
+    fontFamily: "roboto-regular",
+    color: "#121212",
+    height: 36,
+    width: 283,
+    marginTop: 48,
+    marginLeft: 38
+  },
+  fecha: {
     fontFamily: "roboto-regular",
     color: "#121212",
     height: 36,
@@ -161,6 +246,9 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: "transparent",
     paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "rgba(126,188,53,1)",
+    borderRadius: 7
   },
 });
 

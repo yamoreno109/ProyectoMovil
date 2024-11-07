@@ -1,99 +1,108 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, FlatList, Image } from "react-native";
+import { useRoute } from "@react-navigation/native";
 
-function EstadoPrestamo(props) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.rectStack}>
-        <View style={styles.rect}></View>
-        <Text style={styles.prestamos}>Prestamos:</Text>
-      </View>
-      <View style={styles.rect1Stack}>
-        <View style={styles.rect1}></View>
-        <Text style={styles.estado}>Estado:</Text>
-      </View>
-      <View style={styles.fechaStack}>
-        <Text style={styles.fecha}>Fecha:</Text>
-        <View style={styles.rect2}></View>
-      </View>
-    </View>
-  );
+function EstadoPrestamo() {
+    const route = useRoute();
+    const { UsuarioId } = route.params || {};
+    const [prestamos, setPrestamos] = useState([]);
+
+    const getPrestamos = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/getprestamouno/${UsuarioId}`);
+            if (!response.ok) {
+                throw new Error('Error al obtener los préstamos');
+            }
+            const data = await response.json();
+            setPrestamos(data.transactions);
+        } catch (error) {
+            console.log('Error al obtener los préstamos: ', error);
+        }
+    };
+
+    useEffect(() => {
+        if (UsuarioId) {
+            getPrestamos();
+        }
+    }, [UsuarioId]);
+
+    const renderItem = ({ item }) => (
+        <View style={styles.rect}>
+            <Text style={styles.prestamos}>Préstamo: {item.Monto}</Text>
+            <Text style={styles.estado}>Estado: {item.Estado}</Text>
+            <Text style={styles.fecha}>Fecha de solicitud: {item.FechaSolicitud}</Text>
+            <Text style={styles.plazo}>Plazo: {item.Plazo}</Text>
+        </View>
+    );
+
+    return (
+        <View style={styles.container}>
+            <FlatList
+                data={prestamos}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                contentContainerStyle={styles.listContent}
+            />
+            <Image
+                source={require("../components/oji.png")}
+                resizeMode="contain"
+                style={styles.image}
+            />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: -30 
-  },
-  rect: {
-    top: 27,
-    width: 279,
-    height: 143,
-    position: "absolute",
-    backgroundColor: "#E6E6E6",
-    left: 2
-  },
-  prestamos: {
-    top: 0,
-    left: 0,
-    position: "absolute",
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    height: 33,
-    width: 283
-  },
-  rectStack: {
-    width: 283,
-    height: 170,
-    marginTop: 66,
-    marginLeft: 38
-  },
-  rect1: {
-    top: 26,
-    width: 279,
-    height: 143,
-    position: "absolute",
-    backgroundColor: "#E6E6E6",
-    left: 2
-  },
-  estado: {
-    top: 0,
-    left: 0,
-    position: "absolute",
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    height: 33,
-    width: 283
-  },
-  rect1Stack: {
-    width: 283,
-    height: 169,
-    marginTop: 11,
-    marginLeft: 38
-  },
-  fecha: {
-    top: 0,
-    left: 0,
-    position: "absolute",
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    height: 33,
-    width: 283
-  },
-  rect2: {
-    top: 26,
-    width: 279,
-    height: 143,
-    position: "absolute",
-    backgroundColor: "#E6E6E6",
-    left: 2
-  },
-  fechaStack: {
-    width: 283,
-    height: 169,
-    marginTop: 29,
-    marginLeft: 38
-  }
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+    },
+    listContent: {
+        padding: 20,
+    },
+    rect: {
+        width: '100%',
+        backgroundColor: "#E6E6E6",
+        marginVertical: 10,
+        padding: 15,
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    prestamos: {
+        fontFamily: "roboto-regular",
+        color: "#121212",
+        fontSize: 16,
+        fontWeight: "bold",
+        marginBottom: 5,
+    },
+    estado: {
+        fontFamily: "roboto-regular",
+        color: "#121212",
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    fecha: {
+        fontFamily: "roboto-regular",
+        color: "#121212",
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    plazo: {
+        fontFamily: "roboto-regular",
+        color: "#121212",
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    image: {
+        width: 100,
+        height: 100,
+        alignSelf: "center",
+        marginTop: 20,
+    },
 });
 
 export default EstadoPrestamo;
