@@ -35,17 +35,17 @@ function Transacciones(props) {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert('Éxito', data.message);
+        window.alert('Éxito', data.message);
 
         setMonto('');
         setCuentaRemitente('');
         setCuentaDestinatario('');
         setMensaje('');
       } else {
-        Alert.alert('Error', data.message || 'Hubo un problema al realizar la transferencia');
+        window.alert('Error', data.message || 'Hubo un problema al realizar la transferencia');
       }
     } catch (error) {
-      Alert.alert('Error', 'Error de red o servidor');
+      window.alert('Error', 'Error de red o servidor');
     } finally {
       setLoading(false); 
     }
@@ -69,17 +69,17 @@ function Transacciones(props) {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert('Éxito', data.message);
+        window.alert('Éxito', data.message);
         // Limpiar los campos
         setMonto('');
         setCuentaRemitente('');
         setCuentaDestinatario('');
         setMensaje('');
       } else {
-        Alert.alert('Error', data.message || 'Hubo un problema al realizar el deposito');
+        window.alert('Error', data.message || 'Hubo un problema al realizar el deposito');
       }
     } catch (error) {
-      Alert.alert('Error', 'Error de red o servidor');
+      window.alert('Error', 'Error de red o servidor');
     } finally {
       setLoading(false); 
     }
@@ -103,17 +103,17 @@ function Transacciones(props) {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert('Éxito', data.message);
+        window.alert('Éxito', data.message);
         // Limpiar los campos
         setMonto('');
         setCuentaRemitente('');
         setCuentaDestinatario('');
         setMensaje('');
       } else {
-        Alert.alert('Error', data.message || 'Hubo un problema al realizar el retiro');
+        window.alert('Error', data.message || 'Hubo un problema al realizar el retiro');
       }
     } catch (error) {
-      Alert.alert('Error', 'Error de red o servidor');
+      window.alert('Error', 'Error de red o servidor');
     } finally {
       setLoading(false); 
     }

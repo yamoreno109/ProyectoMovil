@@ -34,6 +34,12 @@ function Registro(props) {
 
       if (response.ok) {
         window.alert("Registro exitoso", "Tus datos fueron enviados correctamente.");
+        setNumeroCuenta('');
+        setNombreCompleto('');
+        setEmail('');
+        setContraseña('');
+        setNumeroCuenta('');
+        setTipoCuenta('');
       } else {
         window.alert("Error en el registro", result.message || "Hubo un problema al enviar los datos.");
       }

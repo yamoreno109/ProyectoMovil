@@ -28,14 +28,18 @@ function ActualizarUsuario(props) {
     
             const result = await response.json()
             if(response.ok){
-                Alert.alert("Exito","Información actualizada correctamente")
+                window.alert("Exito","Información actualizada correctamente")
+                setNombre('');
+                setEmail('');
+                setContraseña('');
+                setTipo('');
             }
             else{
-                Alert.alert("Error",result.message || "No se pudo actualizar la información")
+                window.alert("Error",result.message || "No se pudo actualizar la información")
             }
         } catch (error) {
             console.log(error)
-            Alert.alert("Error", "Hubo un problema con la actualización");
+            window.alert("Error", "Hubo un problema con la actualización");
         }
     } 
 

@@ -37,6 +37,10 @@ function Prestamos(props) {
 
       if(response.ok){
         window.alert("Registro exitoso", "Tus datos fueron enviados correctamente.");
+        setUsuarioId('');
+        setMonto('');
+        setPlazo('');
+        setFechaSolicitud('');
       } else {
         window.alert("Error en el registro", result.message || "Hubo un problema al enviar los datos.");
       }
